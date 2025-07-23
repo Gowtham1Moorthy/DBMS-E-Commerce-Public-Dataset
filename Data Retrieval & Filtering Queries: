@@ -1,4 +1,4 @@
-1. List the top 5 most sold products by order count.
+1. List the top 10 most sold products by order count.
 SELECT product_id, seller_id, price, COUNT(*) selled FROM order_items WHERE price GROUP BY product_id, seller_id, price ORDER BY COUNT(*) DESC LIMIT 10;
 
 between price range
