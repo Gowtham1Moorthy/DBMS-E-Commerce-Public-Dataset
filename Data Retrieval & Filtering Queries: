@@ -3,3 +3,23 @@ SELECT product_id, seller_id, price, COUNT(*) selled FROM order_items WHERE pric
 
 between price range
 SELECT product_id, seller_id, price, COUNT(*) selled FROM order_items WHERE price BETWEEN 100 AND 150 GROUP BY product_id, seller_id, price ORDER BY COUNT(*) DESC LIMIT 10;
+
+Show the number of customers in each state, ordered by the highest count.
+SELECT 
+    geolocation_zip_code_prefix, 
+    geolocation_city, 
+    customer_state, 
+    Total_orders 
+FROM (
+    SELECT 
+        customer_state, 
+        customer_zip_code_prefix, 
+        COUNT(*) AS Total_Orders 
+    FROM orders 
+    JOIN customers ON customers.customer_id = orders.customer_id 
+    GROUP BY customer_state, customer_zip_code_prefix 
+    ORDER BY COUNT(*) DESC, customer_state
+) AS T 
+JOIN geolocation 
+    ON geolocation.geolocation_zip_code_prefix = T.customer_zip_code_prefix 
+LIMIT 10;
