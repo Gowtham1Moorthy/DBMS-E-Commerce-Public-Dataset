@@ -4,7 +4,7 @@ SELECT product_id, seller_id, price, COUNT(*) selled FROM order_items WHERE pric
 between price range
 SELECT product_id, seller_id, price, COUNT(*) selled FROM order_items WHERE price BETWEEN 100 AND 150 GROUP BY product_id, seller_id, price ORDER BY COUNT(*) DESC LIMIT 10;
 
-Show the number of customers in each state, ordered by the highest count.
+2. Show the number of customers in each state, ordered by the highest count.
 SELECT 
     geolocation_zip_code_prefix, 
     geolocation_city, 
@@ -23,3 +23,23 @@ FROM (
 JOIN geolocation 
     ON geolocation.geolocation_zip_code_prefix = T.customer_zip_code_prefix 
 LIMIT 10;
+
+3. Retrieve all orders that were delivered after the estimated delivery date.
+SELECT 
+    c.customer_id, 
+    c.customer_zip_code_prefix, 
+    c.customer_city, 
+    c.customer_state, 
+    COUNT(*) AS Total_Late_Delivery
+FROM 
+    orders o
+JOIN 
+    customers c ON o.customer_id = c.customer_id
+WHERE 
+    o.order_delivered_customer_date > o.order_estimated_delivery_date
+GROUP BY 
+    c.customer_id, c.customer_zip_code_prefix, c.customer_city, c.customer_state
+HAVING 
+    COUNT(*) > 1
+ORDER BY 
+    Total_Late_Delivery DESC;
